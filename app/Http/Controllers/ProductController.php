@@ -32,7 +32,7 @@ class ProductController extends Controller
         ],[
             'tens.required' => "nhap string",
             'phuk.required' => "nhap string",
-            'gias.required' => "nhap so",
+            'gias.required' => "nhap so moi",
         ]);
 
 
