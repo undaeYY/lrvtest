@@ -9,6 +9,6 @@ class UserModel extends Model
 {
     use HasFactory;
 
-    public $table = "thuvien"; 
+    public $table = "studens"; 
     public $timestamps = false;
 }

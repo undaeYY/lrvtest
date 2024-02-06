@@ -7,50 +7,77 @@ use Illuminate\Support\Facades\DB;
 use App\Models\UserModel;
 class ProductController extends Controller
 {
-    public function addview(){ // GET
-        return view('save');
-    }
-
-    public function list($id = null){    
+    public function view($id = NULL){
         if($id){
-            $data = UserModel::where('id',$id)->get();
+            $data = DB::where('id',$id)->get();
         }else{
-            $data = UserModel::all();
+            $data = DB::table('studens')->get();
         }
-
-       $arr['data'] = $data;
-        /*$data = UserModel::paginate(3);*/
-        return view('product',['data' => $data]);
+        return view('view', ['data' => $data]);
     }
 
-    public function add(Request $req){ // POST
+    public function getadd(){
+        return view('add');
+    }
 
+    public function postadd(Request $req){
         $validate = $req->validate([
-            'tens' => 'required|string',
-            'phuk' => 'required|string',
-            'gias' => 'required|numeric'
+            'name' => 'required|string',
+            'email' => 'required|string',
+            'address' => 'required|string',
+            'phone' => 'required|string'
         ],[
-            'tens.required' => "nhap string",
-            'phuk.required' => "nhap string",
-            'gias.required' => "nhap so moi",
+            'name.required' => 'vui long nhap khong de trong name!', 
+            'email.required' => 'vui long nhap khong de trong email!', 
+            'address.required' => 'vui long nhap khong de trong address!', 
+            'phone.required' => 'vui long nhap khong de trong phone!' 
         ]);
 
-
-        $thuvien = new UserModel();
-        $thuvien->tensach = $req->tens;
-        $thuvien->phukien = $req->phuk;
-        $thuvien->giasach = $req->gias;
-        $thuvien->save();
-
-        print_r($req->input());
-        return view('save');
+        DB::table('studens')->insert([
+            'name' => $req->name,
+            'email' => $req->email,
+            'address' => $req->address,
+            'phone' => $req->phone
+        ]);
+        return redirect('view');
     }
 
     public function delete($id){
-        $thuvien = new UserModel();
-        $data = $thuvien->find($id);
-        $data->delete();
-
-        echo 'da xoa: '.$id;
+        Db::table('studens')->where('id',$id)->delete();
+        return redirect('view');
     }
+
+    public function edit($id){
+        $data = DB::table('studens')->find($id);
+
+        return view('edit',['data' => $data]);
+    }
+
+    public function update(Request $req){
+        $validate = $req->validate([
+            'name' => 'required|string',
+            'email' => 'required|string',
+            'address' => 'required|string',
+            'phone' => 'required|string',
+        ],[
+            'name.required' => 'vui long khong de trong!',
+            'email.required' => 'vui long khong de trong!',
+            'address.required' => 'vui long khong de trong!',
+            'phone.required' => 'vui long khong de trong!',
+        ]);
+
+       DB::table('studens')->where('id',$req->id)->update([
+            'name' => $req->name,
+            'email' => $req->email,
+            'address' => $req->address,
+            'phone' => $req->phone,
+        ]);
+        return redirect('view');    
+    }
+
+    public function detail($id){
+        $data = DB::table('studens')->find($id);
+
+        return view('detail', ['data' => $data]);
+    } 
 }

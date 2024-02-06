@@ -11,7 +11,7 @@ class TestIDController extends Controller
             'id' => $id,
             'name' => $name
         ];
-
+        
         return view('user', $arr);
    }
 }
